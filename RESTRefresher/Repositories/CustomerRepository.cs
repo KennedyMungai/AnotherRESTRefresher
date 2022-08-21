@@ -46,6 +46,26 @@ public class CustomerRepository : ICustomerRepository
 
     public Task<bool?> DeleteAsync(string id)
     {
+        id = id.ToUpper();
+
+        Customer? c = db.Customers.Find(id);
+
+        if(c is null)
+        {
+            return null;
+        }
+
+        db.Customers.Remove(c);
+
+        int affected = db.SaveChangesAsync();
+
+        if (affected == 1)
+        {
+            if (customersCache is null)
+            {
+                return null;
+            }
+        }
     }
 
     public Task<IEnumerable<Customer>> RetrieveAllAsync()
