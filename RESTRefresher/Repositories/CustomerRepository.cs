@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using RESTRefresher.Data;
 using RESTRefresher.Models;
 
@@ -22,9 +23,25 @@ public class CustomerRepository : ICustomerRepository
         }
     }
 
-    public Task<Customer?> CreateAsync(Customer c)
+    public async Task<Customer?> CreateAsync(Customer c)
     {
-        throw new NotImplementedException();
+        c.CustomersId = c.CustomersId.ToUpper();
+
+        EntityEntry<Customer> added = await db.Customers.AddAsync(c);
+        int affected = await db.SaveChangesAsync();
+        if (affected == 1)
+        {
+            if (customersCache is null)
+            {
+                return c;
+            }
+
+            return customersCache.AddOrUpdate(c.CustomerId, c, UpdateCache);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public Task<bool?> DeleteAsync(string id)
