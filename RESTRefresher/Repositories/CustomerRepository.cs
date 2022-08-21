@@ -71,4 +71,22 @@ public class CustomerRepository : ICustomerRepository
     {
         throw new NotImplementedException();
     }
+
+    public Customer UpdateCache(string id, Customer c)
+    {
+        Customer? old;
+
+        if (customersCache is not null)
+        {
+            if (customersCache.TryGetValue(id, out old))
+            {
+                if (customersCache.TryUpdate(id, c, old))
+                {
+                    return c;
+                }
+            }
+        }
+
+        return null!;
+    }
 }
