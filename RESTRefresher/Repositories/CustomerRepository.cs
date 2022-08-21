@@ -8,7 +8,7 @@ public class CustomerRepository : ICustomerRepository
 {
     private static ConcurrentDictionary<string, Customer>? customersCache;
 
-    private ApplicationDbContext db;
+    private ApplicationDbContext? db;
 
     public Task<Customer?> CreateAsync(Customer c)
     {
