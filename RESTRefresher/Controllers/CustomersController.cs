@@ -44,4 +44,30 @@ public class CustomersController : ControllerBase
 
         return Ok(c);
     }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create([FromBody] Customer c)
+    {
+        if (c is null)
+        {
+            return BadRequest();
+        }
+
+        Customer? addedCustomer = await repo.CreateAsync(c);
+
+        if(addedCustomer is null)
+        {
+            return BadRequest();
+        }
+        else
+        {
+            return CreatedAtRoute(
+                routeName: nameof(GetCustomer),
+                routeValues: new {id = addedCustomer.CustomerId.ToLower()},
+                value: addedCustomer
+            );
+        }
+    }
 }
