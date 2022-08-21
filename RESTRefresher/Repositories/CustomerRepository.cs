@@ -13,6 +13,13 @@ public class CustomerRepository : ICustomerRepository
     public CustomerRepository(ApplicationDbContext applicationDbContext)
     {
         db = applicationDbContext;
+
+        if (customersCache is null)
+        {
+            customersCache = new ConcurrentDictionary<string, Customer>(
+                db.Customers.ToDictionary(c => c.CustomersId)
+            );
+        }
     }
 
     public Task<Customer?> CreateAsync(Customer c)
