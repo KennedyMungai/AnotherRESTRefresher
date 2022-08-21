@@ -46,7 +46,7 @@ public class CustomerRepository : ICustomerRepository
 
     public Task<bool?> DeleteAsync(string id)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(customersCache is null ? Enumerable.Empty<Customer>() : customersCache.Values);
     }
 
     public Task<IEnumerable<Customer>> RetrieveAllAsync()
