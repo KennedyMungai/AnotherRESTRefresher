@@ -70,4 +70,30 @@ public class CustomersController : ControllerBase
             );
         }
     }
+
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update(string id, [FromBody] Customer c)
+    {
+        id = id.ToUpper();
+        c.CustomerId = c.CustomerId.ToUpper();
+
+        if (c is null or c.CustomerId != id)
+        {
+            return BadRequest();
+        }
+
+        Customer? existing = await repo.RetrieveAsync(id);
+
+        if (existing is null)
+        {
+            return NotFound();
+        }
+
+        await repo.UpdateAsync(id, c);
+
+        return new NoContentResult();
+    }
 }
