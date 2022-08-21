@@ -10,6 +10,11 @@ public class CustomerRepository : ICustomerRepository
 
     private ApplicationDbContext? db;
 
+    public CustomerRepository(ApplicationDbContext applicationDbContext)
+    {
+        db = applicationDbContext;
+    }
+
     public Task<Customer?> CreateAsync(Customer c)
     {
         throw new NotImplementedException();
