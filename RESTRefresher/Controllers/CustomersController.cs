@@ -96,4 +96,31 @@ public class CustomersController : ControllerBase
 
         return new NoContentResult();
     }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(string id)
+    {
+        Customer? existing = await repo.RetrieveAsync(id);
+
+        if (existing is null)
+        {
+            return NotFound();
+        }
+
+        bool? deleted = await repo.DeleteAsync(id);
+
+        if (deleted.HasValue && deleted.Value)
+        {
+            return new NoContentResult();
+        }
+        else
+        {
+            return BadRequest(
+                $"Customer {id} was found but failed to delete"
+            );
+        }
+    }
 }
