@@ -55,7 +55,16 @@ public class CustomerRepository : ICustomerRepository
 
     public Task<Customer?> RetrieveAsync(string id)
     {
-        throw new NotImplementedException();
+        id = id.ToUpper();
+
+        if(customersCache is null)
+        {
+            return null;
+        }
+
+        customersCache.TryGetValue(id, out Customer? c);
+
+        return Task.FromResult(c);
     }
 
     public Task<Customer?> UpdateAsync(string id, Customer c)
