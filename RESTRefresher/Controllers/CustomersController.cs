@@ -29,4 +29,19 @@ public class CustomersController : ControllerBase
                     .Where(customer => customer.Country == country);
         }
     }
+
+    [HttpGet("{id}", Name = nameof(GetCustomer))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetCustomer(string id)
+    {
+        Customer? c = await repo.RetrieveAsync(id);
+
+        if (c is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(c);
+    }
 }
