@@ -69,7 +69,17 @@ public class CustomerRepository : ICustomerRepository
 
     public Task<Customer?> UpdateAsync(string id, Customer c)
     {
-        throw new NotImplementedException();
+        id = id.ToUpper();
+        c.CustomerId = c.CustomerId.ToUpper();
+
+        db.Customers.Update(c);
+        int affected = db.SaveChangesAsync();
+        if (affected == 1)
+        {
+            return UpdateCache(id, c);
+        }
+
+        return null;
     }
 
     public Customer UpdateCache(string id, Customer c)
